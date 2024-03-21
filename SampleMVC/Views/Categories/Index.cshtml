@@ -5,6 +5,7 @@
     {
         pageNumber = Convert.ToInt32(ViewData["pageNumber"]);
     }
+    int lastPage = Convert.ToInt32(ViewData["lastPage"]);
 }
 
 <div class="row">
@@ -54,10 +55,10 @@
                     }
                 </table>
 
-                <a class="btn btn-outline-info btn-sm">First</a>&nbsp;
+                <a href="/Categories/" class="btn btn-outline-info btn-sm">First</a>&nbsp;
                 <a href="/Categories/Index?act=prev&pageNumber=@pageNumber" class="btn btn-outline-info btn-sm">Prev</a>&nbsp;
                 <a href="/Categories/Index?act=next&pageNumber=@pageNumber" class="btn btn-outline-info btn-sm">Next</a>&nbsp;
-                <a class="btn btn-outline-info btn-sm">Last</a>
+                <a href="/Categories/Index?pageNumber=@lastPage" class=" btn btn-outline-info btn-sm">Last</a>
 
             </div>
         </div>

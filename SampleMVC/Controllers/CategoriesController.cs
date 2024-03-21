@@ -21,7 +21,7 @@ public class CategoriesController : Controller
     }
 
 
-    public async Task<IActionResult> IndexAsync(int pageNumber = 1, int pageSize = 3, string search = " ", string act = "")
+    public async Task<IActionResult> IndexAsync(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
     {
 
         /*if (HttpContext.Session.GetString("user") == null)
@@ -54,6 +54,7 @@ public class CategoriesController : Controller
         var models = await _categoryServices.GetAllWithPaging(pageNumber, pageSize, search);
         categoriesViewModel.Categories = models;
         var maxSize = (await _categoryServices.GetAll()).Count();
+        ViewData["lastPage"] = (int)Math.Ceiling((double)maxSize / pageSize);
         //return Content($"{pageNumber} - {pageSize} - {search} - {act}");
 
         if (act == "next")
@@ -62,7 +63,7 @@ public class CategoriesController : Controller
             {
                 pageNumber += 1;
             }
-            ViewData["pagenumber"] = pageNumber;
+            ViewData["pageNumber"] = pageNumber;
         }
         else if (act == "prev")
         {
@@ -70,14 +71,14 @@ public class CategoriesController : Controller
             {
                 pageNumber -= 1;
             }
-            ViewData["pagenumber"] = pageNumber;
+            ViewData["pageNumber"] = pageNumber;
         }
         else
         {
-            ViewData["pagenumber"] = 2;
+            ViewData["pageNumber"] = 2;
         }
 
-        ViewData["pagesize"] = pageNumber;
+        ViewData["pageSize"] = pageNumber;
         //ViewData["action"] = action;
 
 

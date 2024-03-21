@@ -55,13 +55,14 @@ namespace SampleMVC.Services
             {
                 PropertyNameCaseInsensitive = true
             });
-            var pagingCategories = categories.OrderBy(c => c.CategoryName)
+            var pagingCategories = categories;
+            //if (name != null)
+            //{
+                pagingCategories = pagingCategories.Where(c=>c.CategoryName.Contains(name));
+            //}
+            pagingCategories = pagingCategories.OrderBy(c => c.CategoryName)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize);
-            if (name != null)
-            {
-                pagingCategories.Where(c=>c.CategoryName == name);
-            }
 
             return pagingCategories;
         }
