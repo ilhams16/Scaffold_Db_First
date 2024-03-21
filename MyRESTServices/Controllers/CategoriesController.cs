@@ -28,6 +28,27 @@ namespace MyRESTServices.Controllers
             var results = await _categoryBLL.GetAll();
             return results;
         }
+        [HttpGet("count/{name}")]
+        public async Task<IActionResult> GetCount(string name)
+        {
+            var result = await _categoryBLL.GetCountCategories(name);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("pageNumber={pageNumber}/pageSize={pageSize}/search={name}")]
+        public async Task<IActionResult> GetPagination(int pageNumber, int pageSize, string? name)
+        {
+            var result = await _categoryBLL.GetWithPaging(pageNumber, pageSize, name);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)

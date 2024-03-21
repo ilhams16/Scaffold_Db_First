@@ -40,11 +40,30 @@ namespace SampleMVC.Services
 
             return categories;
         }
+        public async Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string? name)
+        {
+            //_logger.LogInformation(GetBaseUrl());
+            var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/pageNumber={pageNumber}/pageSize={pageSize}/search={name}");
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception("Cannot retrieve category");
+            }
+
+            var content = await httpResponse.Content.ReadAsStringAsync();
+            var categories = JsonSerializer.Deserialize<IEnumerable<CategoryDTO>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return categories;
+        }
+
 
         public async Task<CategoryDTO> GetById(int id)
         {
             var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/{id}");
-
+            _logger.LogInformation($"{GetBaseUrl()}/{id}");
             if (!httpResponse.IsSuccessStatusCode)
             {
                 throw new Exception("Cannot retrieve category");
@@ -57,6 +76,23 @@ namespace SampleMVC.Services
             });
 
             return category;
+        }
+
+        public async Task<int> GetCount(string name)
+        {
+            var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/Count/{name}");
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception("Cannot retrieve category");
+            }
+
+            var content = await httpResponse.Content.ReadAsStringAsync();
+            var count = JsonSerializer.Deserialize<int>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return count;
         }
 
         //post

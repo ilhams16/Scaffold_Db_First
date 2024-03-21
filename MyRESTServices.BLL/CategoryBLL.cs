@@ -57,7 +57,7 @@ namespace MyRESTServices.BLL
             return count;
         }
 
-        public async Task<IEnumerable<CategoryDTO>> GetWithPaging(int pageNumber, int pageSize, string name)
+        public async Task<IEnumerable<CategoryDTO>> GetWithPaging(int pageNumber, int pageSize, string? name)
         {
             var categories = await _categoryData.GetWithPaging(pageNumber, pageSize, name);
             var categoriesDto = _mapper.Map<IEnumerable<CategoryDTO>>(categories);
