@@ -21,7 +21,7 @@ public class CategoriesController : Controller
     }
 
 
-    public async Task<IActionResult> IndexAsync(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
+    public async Task<IActionResult> IndexAsync(int pageNumber = 1, int pageSize = 3, string search = " ", string act = "")
     {
 
         /*if (HttpContext.Session.GetString("user") == null)
@@ -53,7 +53,7 @@ public class CategoriesController : Controller
         //var models = await _categoryServices.GetAll();
         var models = await _categoryServices.GetAllWithPaging(pageNumber, pageSize, search);
         categoriesViewModel.Categories = models;
-        var maxSize = await _categoryServices.GetCount(search);
+        var maxSize = (await _categoryServices.GetAll()).Count();
         //return Content($"{pageNumber} - {pageSize} - {search} - {act}");
 
         if (act == "next")

@@ -40,11 +40,11 @@ namespace SampleMVC.Services
 
             return categories;
         }
-        public async Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string? name)
+        public async Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string name)
         {
             //_logger.LogInformation(GetBaseUrl());
-            var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/pageNumber={pageNumber}/pageSize={pageSize}/search={name}");
-
+            //var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/pageNumber={pageNumber}/pageSize={pageSize}/search={name}");
+            var httpResponse = await _client.GetAsync(GetBaseUrl());
             if (!httpResponse.IsSuccessStatusCode)
             {
                 throw new Exception("Cannot retrieve category");
@@ -55,8 +55,15 @@ namespace SampleMVC.Services
             {
                 PropertyNameCaseInsensitive = true
             });
+            var pagingCategories = categories.OrderBy(c => c.CategoryName)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize);
+            if (name != null)
+            {
+                pagingCategories.Where(c=>c.CategoryName == name);
+            }
 
-            return categories;
+            return pagingCategories;
         }
 
 
