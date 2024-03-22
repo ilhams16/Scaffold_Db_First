@@ -40,14 +40,16 @@ namespace SampleMVC.Services
 
             return categories;
         }
-        public async Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string name)
+        public async Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string? name)
         {
             //_logger.LogInformation(GetBaseUrl());
             //var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/pageNumber={pageNumber}/pageSize={pageSize}/search={name}");
             var httpResponse = await _client.GetAsync(GetBaseUrl());
-            if (!httpResponse.IsSuccessStatusCode)
+            if ((int)httpResponse.StatusCode == 403)
             {
-                throw new Exception("Cannot retrieve category");
+                throw new Exception("Forbidden Access");
+            } else if ((int)httpResponse.StatusCode == 401) {
+                throw new UnauthorizedAccessException("Unauthorized access");
             }
 
             var content = await httpResponse.Content.ReadAsStringAsync();
@@ -56,10 +58,10 @@ namespace SampleMVC.Services
                 PropertyNameCaseInsensitive = true
             });
             var pagingCategories = categories;
-            //if (name != null)
-            //{
+            if (name != null)
+            {
                 pagingCategories = pagingCategories.Where(c=>c.CategoryName.Contains(name));
-            //}
+            }
             pagingCategories = pagingCategories.OrderBy(c => c.CategoryName)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize);

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyRESTServices.BLL.DTOs;
 using MyRESTServices.BLL.Interfaces;
@@ -6,6 +7,7 @@ using MyRESTServices.Models;
 
 namespace MyRESTServices.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ArticlesController : ControllerBase
@@ -38,6 +40,8 @@ namespace MyRESTServices.Controllers
 
         //POST api/Articles
         [HttpPost]
+        [Authorize(Policy = "RequireContributorRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Post([FromBody] ArticleCreateDTO articleCreateDTO)
         {
             var validationResult = _validatorArticleCreateDto.Validate(articleCreateDTO);
@@ -82,6 +86,8 @@ namespace MyRESTServices.Controllers
         }*/
 
         [HttpPost("upload")]
+        [Authorize(Policy = "RequireContributorRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Post([FromForm] ArticleWithFile articleWithFile)
         {
             if (articleWithFile.file == null || articleWithFile.file.Length == 0)
@@ -110,6 +116,8 @@ namespace MyRESTServices.Controllers
 
         //PUT 
         [HttpPut("{id}")]
+        [Authorize(Policy = "RequireContributorRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Put(int id, [FromBody] ArticleUpdateDTO articleUpdateDTO)
         {
             var validationResult = _validatorArticleUpdateDTO.Validate(articleUpdateDTO);
@@ -124,6 +132,8 @@ namespace MyRESTServices.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "RequireContributorRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _articleBLL.Delete(id);

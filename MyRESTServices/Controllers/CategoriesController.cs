@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyRESTServices.BLL.DTOs;
 using MyRESTServices.BLL.Interfaces;
 
 namespace MyRESTServices.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -62,6 +64,7 @@ namespace MyRESTServices.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Post(int id, CategoryCreateDTO categoryCreateDTO)
         {
             var validateResult = await _validatorCategoryCreateDto.ValidateAsync(categoryCreateDTO);
@@ -84,6 +87,7 @@ namespace MyRESTServices.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Put(int id, CategoryUpdateDTO categoryUpdateDTO)
         {
             var validateResult = await _validatorCategoryUpdateDto.ValidateAsync(categoryUpdateDTO);
@@ -106,6 +110,7 @@ namespace MyRESTServices.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Delete(int id)
         {
             try
