@@ -25,7 +25,7 @@ namespace SampleMVC.Services
             return _configuration["BaseUrl"] + "/Accounts";
         }
 
-        public async Task<UserDTO> Login(LoginDTO loginDTO)
+        public async Task<UserWithTokenDTO> Login(LoginDTO loginDTO)
         {
             var json = JsonSerializer.Serialize(loginDTO);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
@@ -37,7 +37,7 @@ namespace SampleMVC.Services
             }
 
             var content = await httpResponse.Content.ReadAsStringAsync();
-            var user = JsonSerializer.Deserialize<UserDTO>(content, new JsonSerializerOptions
+            var user = JsonSerializer.Deserialize<UserWithTokenDTO>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

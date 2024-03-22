@@ -5,6 +5,7 @@ using MyRESTServices.BLL.DTOs;
 using MyWebFormApp.BLL.Interfaces;
 using SampleMVC.Services;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace SampleMVC.Controllers
 {
@@ -79,6 +80,7 @@ namespace SampleMVC.Controllers
             var user = await _accountServices.Login(loginDTO);
             if (user != null)
             {
+                HttpContext.Session.SetString("userToken", user.Token);
                 return RedirectToAction("Index", "Home");
             }
             else

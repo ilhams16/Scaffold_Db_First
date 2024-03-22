@@ -1,4 +1,5 @@
 ﻿using MyRESTServices.BLL.DTOs;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -7,14 +8,17 @@ namespace SampleMVC.Services
     public class CategoryServices : ICategoryServices
     {
         private readonly HttpClient _client;
+        private readonly IHttpContextAccessor _context;
         private readonly IConfiguration _configuration;
         private readonly ILogger<CategoryServices> _logger;
 
-        public CategoryServices(HttpClient client, IConfiguration configuration, ILogger<CategoryServices> logger)
+        public CategoryServices(HttpClient client, IConfiguration configuration, ILogger<CategoryServices> logger, IHttpContextAccessor context)
         {
             _client = client;
             _configuration = configuration;
             _logger = logger;
+            _context = context;
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _context.HttpContext.Session.GetString("userToken"));
         }
 
         private string GetBaseUrl()
@@ -24,6 +28,7 @@ namespace SampleMVC.Services
 
         public async Task<IEnumerable<CategoryDTO>> GetAll()
         {
+            // _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _context.HttpContext.Session.GetString("userToken"));
             _logger.LogInformation(GetBaseUrl());
             var httpResponse = await _client.GetAsync(GetBaseUrl());
 
@@ -44,12 +49,14 @@ namespace SampleMVC.Services
         {
             //_logger.LogInformation(GetBaseUrl());
             //var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/pageNumber={pageNumber}/pageSize={pageSize}/search={name}");
+            // _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _context.HttpContext.Session.GetString("userToken"));
             var httpResponse = await _client.GetAsync(GetBaseUrl());
-            if ((int)httpResponse.StatusCode == 403)
-            {
-                throw new Exception("Forbidden Access");
-            } else if ((int)httpResponse.StatusCode == 401) {
-                throw new UnauthorizedAccessException("Unauthorized access");
+            if (!httpResponse.IsSuccessStatusCode){
+                if ((int)httpResponse.StatusCode == 403){
+                    throw new UnauthorizedAccessException("Unauthorized access");
+                } else if ((int)httpResponse.StatusCode == 401) {
+                    throw new Exception("Forbidden access");
+                }
             }
 
             var content = await httpResponse.Content.ReadAsStringAsync();

@@ -8,6 +8,6 @@ namespace SampleMVC.Services
 {
     public interface IAccountServices
     {
-        Task<UserDTO> Login(LoginDTO loginDTO);
+        Task<UserWithTokenDTO> Login(LoginDTO loginDTO);
     }
 }

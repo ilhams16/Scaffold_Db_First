@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyRESTServices.BLL.DTOs;
 using SampleMVC.Models;
@@ -24,6 +23,9 @@ public class CategoriesController : Controller
 
     public async Task<IActionResult> IndexAsync(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
     {
+        try {
+
+        
         /*if (HttpContext.Session.GetString("user") == null)
         {
             TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda harus login terlebih dahulu !</div>";
@@ -83,6 +85,13 @@ public class CategoriesController : Controller
 
 
         return View(categoriesViewModel);
+        } catch (UnauthorizedAccessException ex) {
+            TempData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
+            return RedirectToAction("Index");
+        } catch (Exception ex) {
+            TempData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
+            return RedirectToAction("Index");
+        }
     }
 
 

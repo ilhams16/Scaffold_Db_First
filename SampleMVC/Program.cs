@@ -26,6 +26,9 @@ builder.Services.AddScoped<IUserBLL, UserBLL>();
 builder.Services.AddScoped<IRoleBLL, RoleBLL>();
 builder.Services.AddHttpClient<ICategoryServices, CategoryServices>();
 builder.Services.AddHttpClient<IAccountServices, AccountServices>();
+builder.Services.AddHttpContextAccessor();
+
+
 
 //fluent validator
 //builder.Services.AddScoped<IValidator<CategoryCreateDTO>, CategoryCreateDTOValidator>();
